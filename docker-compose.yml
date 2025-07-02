@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: laravel-app
+        restart: unless-stopped
+        environment:
+            DB_HOST: db
+            DB_DATABASE: zebra_backend
+            DB_USERNAME: zebra_user
+            DB_PASSWORD: zebra_pass
+        volumes:
+            - ./:/var/www/html
+        ports:
+            - 8000:8000
+        depends_on:
+            - db
+
+    db:
+        image: mysql:8
+        container_name: mysql-db
+        restart: unless-stopped
+        environment:
+            MYSQL_DATABASE: zebra_backend
+            MYSQL_USER: zebra_user
+            MYSQL_PASSWORD: zebra_pass
+            MYSQL_ROOT_PASSWORD: rootpass
+            MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+        ports:
+            - 3307:3306
+        volumes:
+            - dbdata:/var/lib/mysql
+
+volumes:
+    dbdata:
